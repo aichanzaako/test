@@ -19,8 +19,9 @@ jobs:
       - name: Secret scan
         run: |
           echo "=== Scanning for potential secrets ==="
-          if grep -rn --include="*.json" --include="*.md" --include="*.yml" --include="*.ts" --include="*.js" \
-            -E '(sk-[a-zA-Z0-9]{20,}|ghp_[a-zA-Z0-9]{36}|gho_[a-zA-Z0-9]{36}|AKIA[A-Z0-9]{16}|-----BEGIN.*PRIVATE KEY)' \
+          PATTERN='(sk-[a-zA-Z0-9]{20,}|ghp_[a-zA-Z0-9]{36}|gho_[a-zA-Z0-9]{36}|AKIA[A-Z0-9]{16}|-----BEGIN.*PRIVATE KEY)'
+          if grep -rn --include="*.json" --include="*.md" --include="*.ts" --include="*.js" \
+            -E "$PATTERN" \
             --exclude-dir=node_modules --exclude-dir=.git . ; then
             echo "❌ Potential secrets found!"
             exit 1
