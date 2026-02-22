@@ -1,0 +1,8 @@
+{
+  "phase_level": "A",
+  "paused": false,
+  "daily_pr_limit": 3,
+  "daily_x_post_limit": 10,
+  "target_url": "https://mogi-zeta.vercel.app/",
+  "repo": "aichanzaako/test"
+}

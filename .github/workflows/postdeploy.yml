@@ -1,0 +1,35 @@
+name: PostDeploy Check
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Wait for deploy
+        run: sleep 120
+
+      - name: Fast Smoke - Top page
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://mogi-zeta.vercel.app/)
+          echo "Top page status: $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            echo "❌ Top page returned $STATUS"
+            exit 1
+          fi
+          echo "✅ Top page OK"
+
+      - name: Fast Smoke - Health check
+        continue-on-error: true
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://mogi-zeta.vercel.app/api/health)
+          echo "Health check status: $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            echo "⚠️ Health endpoint not ready yet (expected during initial setup)"
+          else
+            echo "✅ Health check OK"
+          fi

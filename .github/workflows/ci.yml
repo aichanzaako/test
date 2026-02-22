@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Basic validation
+        run: |
+          echo "=== File structure check ==="
+          test -f ops/config/phase.json && echo "✅ phase.json exists" || (echo "❌ phase.json missing" && exit 1)
+          test -f ops/policies/rules.md && echo "✅ rules.md exists" || (echo "❌ rules.md missing" && exit 1)
+
+      - name: Secret scan
+        run: |
+          echo "=== Scanning for potential secrets ==="
+          if grep -rn --include="*.json" --include="*.md" --include="*.yml" --include="*.ts" --include="*.js" \
+            -E '(sk-[a-zA-Z0-9]{20,}|ghp_[a-zA-Z0-9]{36}|gho_[a-zA-Z0-9]{36}|AKIA[A-Z0-9]{16}|-----BEGIN.*PRIVATE KEY)' \
+            --exclude-dir=node_modules --exclude-dir=.git . ; then
+            echo "❌ Potential secrets found!"
+            exit 1
+          else
+            echo "✅ No secrets detected"
+          fi

@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# OpenClaw credentials (never commit)
+.openclaw/credentials/
+
+# Logs (keep structure, not contents)
+ops/logs/*.json
+ops/logs/*.log
+!ops/logs/.gitkeep
+
+# Reports (generated, not committed)
+ops/reports/*.md
+ops/reports/*.txt
+ops/reports/*.jsonl
+!ops/reports/.gitkeep
